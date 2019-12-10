@@ -52,18 +52,50 @@ function askUser() {
         console.log(res);
       })
     }
+    if (res.option === "Add department") {
+      addDepartment();
+    }
   })
-    // if (res.option === "Add department") {
-    //   // insertDept();
-    //   function insertDept(name) {
-    //     connection.query("INSERT INTO department (name) VALUES (?)",
-    //     [name],
-    //     function (err, response) {
-    //       if (err) throw err;
-    //       console.log("\nDepartment successfully added.")
-    //     })
-    //   }
-    // }
-    //  insertDept();
-    
+  
+  function addDepartment() {
+    inquirer
+      .prompt([
+    {
+      type: "input",
+      name: "department name",
+      message: "Department Name: "
+    }
+  ])
+  .then((res) => {
+    console.log(res);
+    var deptName = res;
+
+    connection.query(
+      "INSERT INTO department SET ?",
+      {
+        name: deptName
+      },
+      function(err, res) {
+        if (err) throw err;
+        console.log(res + "department inserted");
+      }
+    )
+
+   
+  })
+
 }
+    
+      
+    }
+     
+    
+    // function insertDept(name) {
+    //   connection.query("INSERT INTO department (name) VALUES ?",
+    //   [name],
+    //   function (err, response) {
+    //     if (err) throw err;
+    //     console.log("\nDepartment successfully added.")
+    //   })
+    // }
+    // insertDept();
