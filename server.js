@@ -75,7 +75,7 @@ function askUser() {
   }
 
   function viewRole() {
-    connection.query("SELECT title FROM role", function (err, res) {
+    connection.query("SELECT title, salary, department_id FROM role", function (err, res) {
       if (err) throw err;
       console.table(res);
       askUser();
@@ -83,7 +83,7 @@ function askUser() {
   }
 
   function viewEmployee() {
-    connection.query("SELECT first_name, last_name FROM employee", function (err, res) {
+    connection.query("SELECT first_name, last_name, role_id, manager_id FROM employee", function (err, res) {
       if (err) throw err;
       console.table(res);
       askUser();
@@ -210,12 +210,13 @@ function askUser() {
   }
 
   function updateEmp() {
-    inquirer
-      .prompt([
-        {
-          type: "input",
-          name: ""
-        }
-      ])
+    viewEmployee();
+    // inquirer
+    //   .prompt([
+    //     {
+    //       type: "input",
+    //       name: ""
+    //     }
+    //   ])
   }
 }
