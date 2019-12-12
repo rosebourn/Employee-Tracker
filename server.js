@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var cTable = require("console.table");
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -43,22 +44,13 @@ function askUser() {
     .then((res) => {
       console.log(res.option);
       if (res.option === "View all departments") {
-        connection.query("SELECT name FROM department", function (err, res) {
-          if (err) throw err;
-          console.log(res);
-        })
+        viewDepartment();
       }
       if (res.option === "View all roles") {
-        connection.query("SELECT title FROM role", function (err, res) {
-          if (err) throw err;
-          console.log(res);
-        })
+        viewRole();
       }
       if (res.option === "View all employees") {
-        connection.query("SELECT first_name, last_name FROM employee", function (err, res) {
-          if (err) throw err;
-          console.log(res);
-        })
+        viewEmployee();
       }
       if (res.option === "Add department") {
         addDepartment();
@@ -73,6 +65,30 @@ function askUser() {
         updateEmp();
       }
     })
+
+  function viewDepartment() {
+    connection.query("SELECT name FROM department", function (err, res) {
+      if (err) throw err;
+      console.table(res);
+      askUser();
+    })
+  }
+
+  function viewRole() {
+    connection.query("SELECT title FROM role", function (err, res) {
+      if (err) throw err;
+      console.table(res);
+      askUser();
+    })
+  }
+
+  function viewEmployee() {
+    connection.query("SELECT first_name, last_name FROM employee", function (err, res) {
+      if (err) throw err;
+      console.table(res);
+      askUser();
+    })
+  }
 
   function addDepartment() {
     inquirer
@@ -194,6 +210,12 @@ function askUser() {
   }
 
   function updateEmp() {
-    
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: ""
+        }
+      ])
   }
 }
