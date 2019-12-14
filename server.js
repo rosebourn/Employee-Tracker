@@ -43,6 +43,7 @@ function askUser() {
 
     .then((res) => {
       console.log(res.option);
+
       if (res.option === "View all departments") {
         viewDepartment();
       }
@@ -64,7 +65,7 @@ function askUser() {
       if (res.option === "Update employee role") {
         updateEmp();
       }
-    })
+    });
 
   function viewDepartment() {
     connection.query("SELECT name FROM department", function (err, res) {
@@ -114,10 +115,7 @@ function askUser() {
             askUser();
           }
         )
-
-
       })
-
   }
 
   function addRole() {
@@ -161,7 +159,7 @@ function askUser() {
       }
       )
   }
-    
+
   function addEmployee() {
     inquirer
       .prompt([
@@ -210,13 +208,76 @@ function askUser() {
   }
 
   function updateEmp() {
-    viewEmployee();
-    // inquirer
-    //   .prompt([
-    //     {
-    //       type: "input",
-    //       name: ""
-    //     }
-    //   ])
+    connection.query("SELECT * FROM employee", function (err, results) {
+      if (err) throw err;
+
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            name: "choice",
+            choices: function () {
+              var employee = [];
+              for (var i = 0; i < results.length; i++) {
+                employee.push(results[i].id + " " + results[i].first_name + " " + results[i].last_name);
+              }
+              return employee;
+            },
+            message: "Which employee would you like to update?"
+          },
+          {
+            type: "input",
+            name: "updatedFirst",
+            message: "Employee First Name: "
+          },
+          {
+            type: "input",
+            name: "updatedLast",
+            message: "Employee Last Name: "
+          },
+          {
+            type: "input",
+            name: "updatedRole",
+            message: "Role ID: "
+          },
+          {
+            type: "input",
+            name: "updatedManager",
+            message: "Manager ID: "
+          },
+        ])
+        .then((res) => {
+          var fullName = res.choice.split(" ");
+          // var id = results.filter(obj => obj.first_name == fullName[0])[0].id;
+          var id = fullName[0];
+          console.log(res.choice);
+          console.log(res.updatedFirst);
+          console.log(res.updatedLast);
+          console.log(res.updatedRole);
+          console.log(res.updatedManager);
+
+        
+        
+        connection.query(
+          "UPDATE employee SET ? WHERE ?",
+          [
+            {
+              first_name: res.updatedFirst,
+              last_name: res.updatedLast,
+              role_id: res.updatedRole,
+              manager_id: res.updatedManager
+            },
+            {
+              id: id
+            },
+            function (err, res) {
+              if (err) throw err;
+              console.log("Employee Updated")
+            }
+          ]
+        )
+
+    })
+  })
   }
 }
